@@ -1,6 +1,9 @@
 <?php
 
-require "./Router.php";
+require_once "../vendor/autoload.php";
+
+use Prism\HttpNotFoundException;
+use Prism\Router;
 
 $router = new Router();
 
