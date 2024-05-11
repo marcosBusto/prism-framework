@@ -3,7 +3,9 @@
 require_once "../vendor/autoload.php";
 
 use Prism\HttpNotFoundException;
+use Prism\Request;
 use Prism\Router;
+use Prism\Server;
 
 $router = new Router();
 
@@ -16,7 +18,7 @@ $router->post('/test', function () {
 });
 
 try {
-    $route = $router->resolve($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"]);
+    $route = $router->resolve(new Request(new Server()));
     $action = $route->action();
 } catch (HttpNotFoundException $e) {
     print("Not found");
