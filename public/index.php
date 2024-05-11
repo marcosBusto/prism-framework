@@ -2,6 +2,7 @@
 
 use Prism\Http\HttpNotFoundException;
 use Prism\Http\Request;
+use Prism\Http\Response;
 use Prism\Routing\Router;
 use Prism\Server\PhpNativeServer;
 
@@ -9,18 +10,25 @@ require_once "../vendor/autoload.php";
 
 $router = new Router();
 
-$router->get('/test', function () {
-    return "GET OK";
+$router->get('/test', function (Request $request) {
+    $response = new Response();
+
+    $response->setHeader("Content-Type", "application/json");
+    $response->setContent(json_encode(["message" => "GET OK"]));
 });
 
-$router->post('/test', function () {
+$router->post('/test', function (Request $request) {
     return "POST OK";
 });
 
 try {
-    $route = $router->resolve(new Request(new PhpNativeServer()));
+    $request = new Request($server);
+    $route = $router->resolve($request);
     $action = $route->action();
+    $response = $action($request);
+    $server->sendResponse($response);
 } catch (HttpNotFoundException $e) {
-    print("Not found");
-    http_response_code(404);
+    $response = new Response();
+    $response->setStatus(404);
+    $server->sendResponse($response);
 }

@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Prism\\": "src/Prism/"
+            "Prism\\": "src/"
         }
     },
     "scripts": {
