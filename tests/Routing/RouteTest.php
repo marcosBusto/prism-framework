@@ -2,7 +2,7 @@
 
 namespace Prism\Tests;
 
-use Prism\Route;
+use Prism\Routing\Route;
 use PHPUnit\Framework\TestCase;
 
 class RouteTest extends TestCase {

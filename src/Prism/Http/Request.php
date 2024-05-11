@@ -1,6 +1,8 @@
 <?php
 
-namespace Prism;
+namespace Prism\Http;
+
+use Prism\Server\Server;
 
 class Request {
     protected string $uri;

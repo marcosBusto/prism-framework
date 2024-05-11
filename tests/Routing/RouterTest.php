@@ -2,10 +2,10 @@
 
 namespace Prism\Tests;
 
-use Prism\HttpMethod;
-use Prism\Request;
-use Prism\Router;
-use Prism\Server;
+use Prism\Http\HttpMethod;
+use Prism\Http\Request;
+use Prism\Routing\Router;
+use Prism\Server\Server;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase {

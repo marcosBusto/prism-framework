@@ -1,12 +1,11 @@
 <?php
 
-require_once "../vendor/autoload.php";
+use Prism\Http\HttpNotFoundException;
+use Prism\Http\Request;
+use Prism\Routing\Router;
+use Prism\Server\PhpNativeServer;
 
-use Prism\HttpNotFoundException;
-use Prism\PhpNativeServer;
-use Prism\Request;
-use Prism\Router;
-use Prism\Server;
+require_once "../vendor/autoload.php";
 
 $router = new Router();
 

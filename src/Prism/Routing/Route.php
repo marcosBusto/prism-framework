@@ -1,5 +1,7 @@
 <?php
-namespace Prism;
+
+namespace Prism\Routing;
+
 class Route {
     protected string $uri;
     protected string $regex;

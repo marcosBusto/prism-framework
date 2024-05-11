@@ -1,8 +1,11 @@
 <?php
 
-namespace Prism;
+namespace Prism\Routing;
 
 use Closure;
+use Prism\Http\HttpMethod;
+use Prism\Http\HttpNotFoundException;
+use Prism\Http\Request;
 
 class Router {
     protected array $routes = [];

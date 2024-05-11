@@ -1,6 +1,8 @@
 <?php
 
-namespace Prism;
+namespace Prism\Server;
+
+use Prism\Http\HttpMethod;
 
 class PhpNativeServer implements Server {
     public function requestUri(): string {

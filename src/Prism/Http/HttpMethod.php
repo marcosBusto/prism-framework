@@ -1,6 +1,6 @@
 <?php
 
-namespace Prism;
+namespace Prism\Http;
 
 enum HttpMethod: string {
     case GET = "GET";

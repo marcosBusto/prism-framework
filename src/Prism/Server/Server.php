@@ -1,6 +1,8 @@
 <?php
 
-namespace Prism;
+namespace Prism\Server;
+
+use Prism\Http\HttpMethod;
 
 interface Server {
     public function requestUri(): string;

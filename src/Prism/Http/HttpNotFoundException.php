@@ -1,6 +1,6 @@
 <?php
 
-namespace Prism;
+namespace Prism\Http;
 
 class HttpNotFoundException extends \Exception {
     //
