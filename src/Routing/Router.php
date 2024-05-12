@@ -67,7 +67,7 @@ class Router
      * @param \Closure $action
      * @return void
      */
-    public function get(string $uri, Closure $action)
+    public function get(string $uri, \Closure $action)
     {
         $this->registerRoute(HttpMethod::GET, $uri, $action);
     }

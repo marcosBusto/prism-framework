@@ -12,11 +12,11 @@ use Prism\Http\Response;
 interface Server
 {
     /**
-     * Get request set by the client.
+     * Get request sent by the client.
      *
      * @return Request
      */
-    public function getRequest(): array;
+    public function getRequest(): Request;
 
     /**
      * Send the response to the client.

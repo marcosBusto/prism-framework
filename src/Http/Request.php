@@ -57,11 +57,14 @@ class Request
     /**
      * Set request URI.
      *
-     * @return string
+     * @param string $uri
+     * @return self
      */
-    public function setUri(): string
+    public function setUri(string $uri): self
     {
-        return $this->uri;
+        $this->uri = $uri;
+
+        return $this;
     }
 
     /**
@@ -75,7 +78,7 @@ class Request
     }
 
     /**
-     * Set route for this request
+     * Set route for this request.
      *
      * @param Route $route
      * @return self
@@ -98,7 +101,7 @@ class Request
     }
 
     /**
-     * Set HTTP method
+     * Set HTTP method.
      *
      * @param HttpMethod $method
      * @return self
@@ -111,17 +114,23 @@ class Request
     }
 
     /**
-     * Get POST data.
+     * Get all POST data as key-value or get only specific value by providing
+     * a `$key`.
      *
-     * @return array
+     * @return array|string|null Null if the key doesn't exist, the value of
+     * the key if it is present or all the data if no key was provided.
      */
-    public function data(): array
+    public function data(?string $key = null): array|string|null
     {
-        return $this->data;
+        if (is_null($key)) {
+            return $this->data;
+        }
+
+        return $this->data[$key] ?? null;
     }
 
     /**
-     * Set POST data
+     * Set POST data.
      *
      * @param array $data
      * @return self
@@ -134,17 +143,23 @@ class Request
     }
 
     /**
-     * Get all query parameters.
+     * Get all query params as key-value or get only specific value by providing
+     * a `$key`.
      *
-     * @return array
+     * @return array|string|null Null if the key doesn't exist, the value of
+     * the key if it is present or all the query params if no key was provided.
      */
-    public function query(): array
+    public function query(?string $key = null): array|string|null
     {
-        return $this->query;
+        if (is_null($key)) {
+            return $this->query;
+        }
+
+        return $this->query[$key] ?? null;
     }
 
     /**
-     * Set query parameters
+     * Set query parameters.
      *
      * @param array $query
      * @return self
@@ -157,12 +172,20 @@ class Request
     }
 
     /**
-     * Get all route parameters.
+     * Get all route params as key-value or get only specific value by providing
+     * a `$key`.
      *
-     * @return array
+     * @return array|string|null Null if the key doesn't exist, the value of
+     * the key if it is present or all the route params if no key was provided.
      */
-    public function routeParameters(): array
+    public function routeParameters(?string $key = null): array|string|null
     {
-        return $this->route->parseParameters($this->uri);
+        $parameters = $this->route->parseParameters($this->uri);
+
+        if (is_null($key)) {
+            return $parameters;
+        }
+
+        return $parameters[$key] ?? null;
     }
 }

@@ -14,7 +14,7 @@ class RouterTest extends TestCase
     {
         return (new Request())
             ->setUri($uri)
-            ->setmethod($method);
+            ->setMethod($method);
     }
 
     public function test_resolve_basic_route_with_callback_action()
@@ -22,6 +22,7 @@ class RouterTest extends TestCase
         $uri = '/test';
         $action = fn () => "test";
         $router = new Router();
+
         $router->get($uri, $action);
 
         $route = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
