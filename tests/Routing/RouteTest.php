@@ -1,6 +1,6 @@
 <?php
 
-namespace Prism\Tests;
+namespace Prism\Tests\Routing;
 
 use Prism\Routing\Route;
 use PHPUnit\Framework\TestCase;
