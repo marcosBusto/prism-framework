@@ -2,7 +2,7 @@
 
 namespace Prism\Http;
 
-use Prism\Server\Server;
+use Prism\Routing\Route;
 
 /**
  * HTTP request.
@@ -15,6 +15,13 @@ class Request
      * @var string
      */
     protected string $uri;
+
+    /**
+     * Route matched by URI.
+     *
+     * @var Route
+     */
+    protected Route $route;
 
     /**
      * HTTP method used for this request.
@@ -38,19 +45,6 @@ class Request
     protected array $query;
 
     /**
-     * Create a new request from the given `$server`.
-     *
-     * @param Server $server
-     */
-    public function __construct(Server $server)
-    {
-        $this->uri = $server->requestUri();
-        $this->method = $server->requestMethod();
-        $this->data = $server->postData();
-        $this->query = $server->queryParams();
-    }
-
-    /**
      * Get the request URI.
      *
      * @return string
@@ -58,6 +52,39 @@ class Request
     public function uri(): string
     {
         return $this->uri;
+    }
+
+    /**
+     * Set request URI.
+     *
+     * @return string
+     */
+    public function setUri(): string
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Get route matched by the URI of this request.
+     *
+     * @return Route
+     */
+    public function route(): Route
+    {
+        return $this->route;
+    }
+
+    /**
+     * Set route for this request
+     *
+     * @param Route $route
+     * @return self
+     */
+    public function setRoute(Route $route): self
+    {
+        $this->route = $route;
+
+        return $this;
     }
 
     /**
@@ -71,6 +98,19 @@ class Request
     }
 
     /**
+     * Set HTTP method
+     *
+     * @param HttpMethod $method
+     * @return self
+     */
+    public function setMethod(HttpMethod $method): self
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
      * Get POST data.
      *
      * @return array
@@ -81,6 +121,19 @@ class Request
     }
 
     /**
+     * Set POST data
+     *
+     * @param array $data
+     * @return self
+     */
+    public function setPostData(array $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
      * Get all query parameters.
      *
      * @return array
@@ -88,5 +141,28 @@ class Request
     public function query(): array
     {
         return $this->query;
+    }
+
+    /**
+     * Set query parameters
+     *
+     * @param array $query
+     * @return self
+     */
+    public function setQueryParameters(array $query): self
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
+    /**
+     * Get all route parameters.
+     *
+     * @return array
+     */
+    public function routeParameters(): array
+    {
+        return $this->route->parseParameters($this->uri);
     }
 }

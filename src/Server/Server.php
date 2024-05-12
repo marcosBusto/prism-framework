@@ -2,7 +2,7 @@
 
 namespace Prism\Server;
 
-use Prism\Http\HttpMethod;
+use Prism\Http\Request;
 use Prism\Http\Response;
 
 /**
@@ -12,32 +12,11 @@ use Prism\Http\Response;
 interface Server
 {
     /**
-     * Get request URI.
+     * Get request set by the client.
      *
-     * @return string
+     * @return Request
      */
-    public function requestUri(): string;
-
-    /**
-     * Get request HTTP method.
-     *
-     * @return HttpMethod
-     */
-    public function requestMethod(): HttpMethod;
-
-    /**
-     * Get request POST data.
-     *
-     * @return array
-     */
-    public function postData(): array;
-
-    /**
-     * Get request query parameters.
-     *
-     * @return array
-     */
-    public function queryParams(): array;
+    public function getRequest(): array;
 
     /**
      * Send the response to the client.

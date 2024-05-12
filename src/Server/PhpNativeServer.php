@@ -3,6 +3,7 @@
 namespace Prism\Server;
 
 use Prism\Http\HttpMethod;
+use Prism\Http\Request;
 use Prism\Http\Response;
 
 /**
@@ -13,35 +14,18 @@ class PhpNativeServer implements Server
     /**
      * @inheritDoc
      */
-    public function requestUri(): string
+    public function getRequest(): Request
     {
-        return parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+        return (new Request())
+            ->setUri(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH))
+            ->setMethod(HttpMethod::from($_SERVER["REQUEST_METHOD"]))
+            ->setPostData($_POST)
+            ->setQueryParameters($_GET);
     }
 
     /**
      * @inheritDoc
      */
-    public function requestMethod(): HttpMethod
-    {
-        return HttpMethod::from($_SERVER["REQUEST_METHOD"]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function postData(): array
-    {
-        return $_POST;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function queryParams(): array
-    {
-        return $_GET;
-    }
-
     public function sendResponse(Response $response)
     {
         // PHP sends Content-Type header by default, but it has to be removed if
