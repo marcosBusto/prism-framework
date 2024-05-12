@@ -9,14 +9,15 @@ use Prism\Http\Response;
  * Similar to PHP `$_SERVER` but having an interface allows us to mock these
  * global variables, useful for testing.
  */
-interface Server {
+interface Server
+{
     /**
      * Get request URI.
      *
      * @return string
      */
     public function requestUri(): string;
-    
+
     /**
      * Get request HTTP method.
      *

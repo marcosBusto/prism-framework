@@ -7,7 +7,8 @@ use Prism\Server\Server;
 /**
  * HTTP request.
  */
-class Request {
+class Request
+{
     /**
      * URI requested by the client.
      *
@@ -41,7 +42,8 @@ class Request {
      *
      * @param Server $server
      */
-    public function __construct(Server $server) {
+    public function __construct(Server $server)
+    {
         $this->uri = $server->requestUri();
         $this->method = $server->requestMethod();
         $this->data = $server->postData();
@@ -53,7 +55,8 @@ class Request {
      *
      * @return string
      */
-    public function uri(): string {
+    public function uri(): string
+    {
         return $this->uri;
     }
 
@@ -62,7 +65,8 @@ class Request {
      *
      * @return HttpMethod
      */
-    public function method(): HttpMethod {
+    public function method(): HttpMethod
+    {
         return $this->method;
     }
 
@@ -71,7 +75,8 @@ class Request {
      *
      * @return array
      */
-    public function data(): array {
+    public function data(): array
+    {
         return $this->data;
     }
 
@@ -80,7 +85,8 @@ class Request {
      *
      * @return array
      */
-    public function query(): array {
+    public function query(): array
+    {
         return $this->query;
     }
 }
