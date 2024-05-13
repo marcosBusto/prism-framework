@@ -10,14 +10,16 @@ use Prism\Routing\Router;
 use Prism\Server\PhpNativeServer;
 use Prism\Server\Server;
 
-class App {
+class App
+{
     public Router $router;
 
     public Request $request;
 
     public Server $server;
 
-    public static function bootstrap() {
+    public static function bootstrap()
+    {
         $app = Container::singleton(self::class);
 
         $app->router = new Router();
@@ -27,14 +29,10 @@ class App {
         return $app;
     }
 
-    public function run() {
+    public function run()
+    {
         try {
-            $route = $this->router->resolve($this->request);
-
-            $this->request->setRoute($route);
-
-            $action = $route->action();
-            $response = $action($this->request);
+            $response = $this->router->resolve($this->request);
 
             $this->server->sendResponse($response);
         } catch (HttpNotFoundException $e) {

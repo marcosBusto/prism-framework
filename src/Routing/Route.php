@@ -2,6 +2,10 @@
 
 namespace Prism\Routing;
 
+use Closure;
+use Prism\App;
+use Prism\Container\Container;
+
 /**
  * This class stores the URI regex and action.
  */
@@ -34,6 +38,13 @@ class Route
      * @var string[]
      */
     protected array $parameters;
+
+    /**
+     * HTTP middlewares.
+     *
+     * @var \Prism\Http\Middleware[]
+     */
+    protected array $middlewares = [];
 
     /**
      * Create a new route with the given URI and action.
@@ -74,6 +85,28 @@ class Route
     }
 
     /**
+     * Get all HTTP middlewares for this route.
+     *
+     * @return \Prism\Http\Middleware[]
+     */
+    public function middlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+    public function setMiddlewares(array $middlewares): self
+    {
+        $this->middlewares = array_map(fn ($middleware) => new $middleware(), $middlewares);
+
+        return $this;
+    }
+
+    public function hasMiddlewares(): bool
+    {
+        return count($this->middlewares) > 0;
+    }
+
+    /**
      * Check if the given `$uri` matches the regex of this route.
      *
      * @param string $uri
@@ -105,5 +138,10 @@ class Route
         preg_match("#^$this->regex$#", $uri, $arguments);
 
         return array_combine($this->parameters, array_slice($arguments, 1));
+    }
+
+    public static function get(string $uri, Closure $action): Route
+    {
+        return Container::resolve(App::class)->router->get($uri, $action);
     }
 }
