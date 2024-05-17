@@ -7,16 +7,20 @@ use Prism\Validation\Rules\Required;
 use Prism\Validation\Rules\RequiredWith;
 use Prism\Validation\Rules\ValidationRule;
 
-class Rule {
-    public static function email(): ValidationRule {
+class Rule
+{
+    public static function email(): ValidationRule
+    {
         return new Email();
     }
 
-    public static function required(): ValidationRule {
+    public static function required(): ValidationRule
+    {
         return new Required();
     }
 
-    public static function requiredWith(string $withField): ValidationRule {
+    public static function requiredWith(string $withField): ValidationRule
+    {
         return new RequiredWith($withField);
     }
 }

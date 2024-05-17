@@ -2,7 +2,8 @@
 
 namespace Prism\Validation\Rules;
 
-interface ValidationRule {
+interface ValidationRule
+{
     public function message(): string;
 
     public function isValid(string $field, array $data): bool;

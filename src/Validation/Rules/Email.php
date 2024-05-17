@@ -2,12 +2,15 @@
 
 namespace Prism\Validation\Rules;
 
-class Email implements ValidationRule {
-    public function message(): string {
+class Email implements ValidationRule
+{
+    public function message(): string
+    {
         return "Email has invalid format";
     }
 
-    public function isValid(string $field, array $data): bool {
+    public function isValid(string $field, array $data): bool
+    {
         $email = strtolower(trim($data[$field]));
 
         $split = explode("@", $email);
