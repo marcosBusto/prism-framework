@@ -2,7 +2,6 @@
 
 namespace Prism;
 
-use Prism\Container\Container;
 use Prism\Http\HttpNotFoundException;
 use Prism\Http\Request;
 use Prism\Http\Response;
@@ -24,7 +23,7 @@ class App
 
     public static function bootstrap()
     {
-        $app = Container::singleton(self::class);
+        $app = singleton(self::class);
 
         $app->router = new Router();
         $app->server = new PhpNativeServer();
