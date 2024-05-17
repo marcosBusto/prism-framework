@@ -2,6 +2,9 @@
 
 namespace Prism\Http;
 
+use Prism\App;
+use Prism\Container\Container;
+
 /**
  * HTTP response that will be sent to the client.
  */
@@ -178,5 +181,14 @@ class Response
         return (new self())
             ->setStatus(302)
             ->setHeader("Location", $uri);
+    }
+
+    public static function view(string $view): self
+    {
+        $content = Container::resolve(App::class)->view->render($view);
+
+        return (new self())
+            ->setContentType("text/html")
+            ->setContent($content);
     }
 }

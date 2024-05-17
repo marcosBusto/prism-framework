@@ -9,6 +9,8 @@ use Prism\Http\Response;
 use Prism\Routing\Router;
 use Prism\Server\PhpNativeServer;
 use Prism\Server\Server;
+use Prism\View\PrismEngine;
+use Prism\View\View;
 
 class App
 {
@@ -18,6 +20,8 @@ class App
 
     public Server $server;
 
+    public View $view;
+
     public static function bootstrap()
     {
         $app = Container::singleton(self::class);
@@ -25,6 +29,7 @@ class App
         $app->router = new Router();
         $app->server = new PhpNativeServer();
         $app->request = $app->server->getRequest();
+        $app->view = new PrismEngine(__DIR__ . "/../views");
 
         return $app;
     }
