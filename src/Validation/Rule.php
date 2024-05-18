@@ -44,4 +44,8 @@ class Rule
     ): ValidationRule {
         return new RequiredWhen($otherField, $operator, $value);
     }
+
+    public static function from(string $str): ValidationRule
+    {
+    }
 }
