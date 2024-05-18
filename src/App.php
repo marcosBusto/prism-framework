@@ -8,8 +8,10 @@ use Prism\Http\Response;
 use Prism\Routing\Router;
 use Prism\Server\PhpNativeServer;
 use Prism\Server\Server;
+use Prism\Validation\Exceptions\ValidationException;
 use Prism\View\PrismEngine;
 use Prism\View\View;
+use Throwable;
 
 class App
 {
@@ -40,9 +42,21 @@ class App
 
             $this->server->sendResponse($response);
         } catch (HttpNotFoundException $e) {
-            $response = Response::text("Not found")->setStatus(404);
+            $this->abort(Response::text("Not found")->setStatus(404));
+        } catch (ValidationException $e) {
+            $this->abort(json($e->errors())->setStatus(422));
+        } catch (Throwable $e) {
+            $response = json([
+                "message" => $e->getMessage(),
+                "trace" => $e->getTrace()
+            ]);
 
-            $this->server->sendResponse($response);
+            $this->abort($response);
         }
+    }
+
+    public function abort(Response $response)
+    {
+        $this->server->sendResponse($response);
     }
 }

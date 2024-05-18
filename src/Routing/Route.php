@@ -3,8 +3,6 @@
 namespace Prism\Routing;
 
 use Closure;
-use Prism\App;
-use Prism\Container\Container;
 
 /**
  * This class stores the URI regex and action.
@@ -143,5 +141,10 @@ class Route
     public static function get(string $uri, Closure $action): Route
     {
         return app()->router->get($uri, $action);
+    }
+
+    public static function post(string $uri, Closure $action): Route
+    {
+        return app()->router->post($uri, $action);
     }
 }

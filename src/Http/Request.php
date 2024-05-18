@@ -3,6 +3,7 @@
 namespace Prism\Http;
 
 use Prism\Routing\Route;
+use Prism\Validation\Validator;
 
 /**
  * HTTP request.
@@ -207,5 +208,12 @@ class Request
         }
 
         return $parameters[$key] ?? null;
+    }
+
+    public function validate(array $rules, array $messages = []): array
+    {
+        $validator = new Validator($this->data);
+
+        return $validator->validate($rules, $messages);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace Prism\Validation\Rules;
 
-use Prism\Validation\Exceptions\RuleParseException;
-
 class RequiredWhen implements ValidationRule
 {
     /**
