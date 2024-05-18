@@ -2,6 +2,8 @@
 
 namespace Prism\Validation\Rules;
 
+use Prism\Validation\Exceptions\RuleParseException;
+
 class RequiredWhen implements ValidationRule
 {
     /**
@@ -38,6 +40,7 @@ class RequiredWhen implements ValidationRule
             "<" => $data[$this->otherField] < floatval($this->compareWith),
             ">=" => $data[$this->otherField] >= floatval($this->compareWith),
             "<=" => $data[$this->otherField] <= floatval($this->compareWith),
+            default => throw new RuleParseException("Unknown required_when operator: $this->operator"),
         };
 
         return !$isRequired || isset($data[$field]) && $data[$field] != "";

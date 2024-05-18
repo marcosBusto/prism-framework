@@ -9,6 +9,7 @@ use Prism\Routing\Router;
 use Prism\Server\PhpNativeServer;
 use Prism\Server\Server;
 use Prism\Validation\Exceptions\ValidationException;
+use Prism\Validation\Rule;
 use Prism\View\PrismEngine;
 use Prism\View\View;
 use Throwable;
@@ -32,6 +33,8 @@ class App
         $app->request = $app->server->getRequest();
         $app->view = new PrismEngine(__DIR__ . "/../views");
 
+        Rule::loadDefaultRules();
+
         return $app;
     }
 
@@ -47,11 +50,12 @@ class App
             $this->abort(json($e->errors())->setStatus(422));
         } catch (Throwable $e) {
             $response = json([
+                "error" => $e::class,
                 "message" => $e->getMessage(),
                 "trace" => $e->getTrace()
             ]);
 
-            $this->abort($response);
+            $this->abort($response->setStatus(500));
         }
     }
 
