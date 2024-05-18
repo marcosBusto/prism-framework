@@ -2,6 +2,7 @@
 
 namespace Prism\Tests\Validation;
 
+use Prism\Validation\Exceptions\RuleParseException;
 use Prism\Validation\Rules\LessThan;
 use Prism\Validation\Rules\Number;
 use Prism\Validation\Rules\Email;
@@ -36,6 +37,7 @@ class ValidationRulesTest extends TestCase
     {
         $data = ['email' => $email];
         $rule = new Email();
+
         $this->assertEquals($expected, $rule->isValid('email', $data));
     }
 
@@ -56,6 +58,7 @@ class ValidationRulesTest extends TestCase
     {
         $data = ['test' => $value];
         $rule = new Required();
+
         $this->assertEquals($expected, $rule->isValid('test', $data));
     }
 
@@ -63,8 +66,11 @@ class ValidationRulesTest extends TestCase
     {
         $rule = new RequiredWith('other');
         $data = ['other' => 10, 'test' => 5];
+
         $this->assertTrue($rule->isValid('test', $data));
+
         $data = ['other' => 10];
+
         $this->assertFalse($rule->isValid('test', $data));
     }
 
@@ -87,6 +93,7 @@ class ValidationRulesTest extends TestCase
     {
         $rule = new LessThan($value);
         $data = ["test" => $check];
+
         $this->assertEquals($expected, $rule->isValid("test", $data));
     }
 
@@ -118,6 +125,7 @@ class ValidationRulesTest extends TestCase
     {
         $rule = new Number();
         $data = ["test" => $n];
+
         $this->assertEquals($expected, $rule->isValid("test", $data));
     }
 
@@ -139,6 +147,16 @@ class ValidationRulesTest extends TestCase
     public function test_required_when($other, $operator, $compareWith, $data, $field, $expected)
     {
         $rule = new RequiredWhen($other, $operator, $compareWith);
+
         $this->assertEquals($expected, $rule->isValid($field, $data));
+    }
+
+    public function test_required_when_throws_parse_rule_exception_when_operator_is_invalid()
+    {
+        $rule = new RequiredWhen("other", "|||", "test");
+        $data = ["other" => 5, "test" => 1];
+
+        $this->expectException(RuleParseException::class);
+        $rule->isValid("test", $data);
     }
 }
