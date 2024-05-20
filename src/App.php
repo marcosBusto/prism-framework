@@ -8,6 +8,8 @@ use Prism\Http\Response;
 use Prism\Routing\Router;
 use Prism\Server\PhpNativeServer;
 use Prism\Server\Server;
+use Prism\Session\PhpNativeSessionStorage;
+use Prism\Session\Session;
 use Prism\Validation\Exceptions\ValidationException;
 use Prism\Validation\Rule;
 use Prism\View\PrismEngine;
@@ -24,6 +26,8 @@ class App
 
     public View $view;
 
+    public Session $session;
+
     public static function bootstrap()
     {
         $app = singleton(self::class);
@@ -32,6 +36,7 @@ class App
         $app->server = new PhpNativeServer();
         $app->request = $app->server->getRequest();
         $app->view = new PrismEngine(__DIR__ . "/../views");
+        $app->session = new Session(new PhpNativeSessionStorage());
 
         Rule::loadDefaultRules();
 
