@@ -2,6 +2,8 @@
 
 namespace Prism;
 
+use Prism\Database\Drivers\DatabaseDriver;
+use Prism\Database\Drivers\PdoDriver;
 use Prism\Http\HttpMethod;
 use Prism\Http\HttpNotFoundException;
 use Prism\Http\Request;
@@ -29,6 +31,8 @@ class App
 
     public Session $session;
 
+    public DatabaseDriver $database;
+
     public static function bootstrap()
     {
         $app = singleton(self::class);
@@ -38,6 +42,8 @@ class App
         $app->request = $app->server->getRequest();
         $app->view = new PrismEngine(__DIR__ . "/../views");
         $app->session = new Session(new PhpNativeSessionStorage());
+        $app->database = new PdoDriver();
+        $app->database->connect('mysql', 'localhost', 3306, 'framework', 'root', '');
 
         Rule::loadDefaultRules();
 
@@ -55,6 +61,9 @@ class App
     {
         $this->prepareNextRequest();
         $this->server->sendResponse($response);
+        $this->database->close;
+
+        exit();
     }
 
     public function run()
