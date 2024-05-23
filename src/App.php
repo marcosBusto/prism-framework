@@ -20,7 +20,8 @@ use Prism\View\PrismEngine;
 use Prism\View\View;
 use Throwable;
 
-class App {
+class App
+{
     public Router $router;
     public Request $request;
     public Server $server;
@@ -28,9 +29,10 @@ class App {
     public Session $session;
     public DatabaseDriver $database;
 
-    public static function bootstrap() {
+    public static function bootstrap()
+    {
         $app = singleton(self::class);
-        
+
         $app->router = new Router();
         $app->server = new PhpNativeServer();
         $app->request = $app->server->getRequest();
@@ -44,21 +46,24 @@ class App {
         return $app;
     }
 
-    public function prepareNextRequest() {
+    public function prepareNextRequest()
+    {
         if ($this->request->method() == HttpMethod::GET) {
             $this->session->set('_previous', $this->request->uri());
         }
     }
 
-    public function terminate(Response $response) {
+    public function terminate(Response $response)
+    {
         $this->prepareNextRequest();
         $this->server->sendResponse($response);
         $this->database->close();
-        
+
         exit();
     }
 
-    public function run() {
+    public function run()
+    {
         try {
             $this->terminate($this->router->resolve($this->request));
         } catch (HttpNotFoundException $e) {
@@ -76,7 +81,8 @@ class App {
         }
     }
 
-    public function abort(Response $response) {
+    public function abort(Response $response)
+    {
         $this->terminate($response);
     }
 }
