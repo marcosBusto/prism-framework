@@ -2,6 +2,7 @@
 
 use Prism\App;
 use Prism\Database\DB;
+use Prism\Database\Model;
 use Prism\Http\Middleware;
 use Prism\Http\Request;
 use Prism\Http\Response;
@@ -27,12 +28,13 @@ $app->router->get('/redirect', function (Request $request) {
 
 class AuthMiddleware implements Middleware {
     public function handle(Request $request, Closure $next): Response {
+        
         if ($request->headers('Authorization') != 'test') {
             return json(["message" => "Not authenticated"])->setStatus(401);
         }
 
         $response = $next($request);
-
+        
         $response->setHeader('X-Test-Custom-Header', 'Hola');
 
         return $response;
@@ -47,16 +49,15 @@ Route::get('/html', fn (Request $request) => view('home', ['user' => 'Manolo']))
 Route::post('/validate', fn (Request $request) => json($request->validate([
     'test' => 'required',
     'num' => 'number',
-    'email' => ['required_with:num', 'email'],
+    'email' => ['required_with:num', 'email']
 ], [
     'email' => [
         'email' => 'DAME EL CAMPO'
     ]
 ])));
 
-Route::get('/session', function(Request $request) {
+Route::get('/session', function (Request $request) {
     // session()->flash('test', 'test');
-
     return json($_SESSION);
 });
 
@@ -68,12 +69,25 @@ Route::post('/form', function (Request $request) {
 
 Route::post('/user', function (Request $request) {
     DB::statement("INSERT INTO users (name, email) VALUES (?, ?)", [$request->data('name'), $request->data('email')]);
-
+    
     return json(["message" => "ok"]);
 });
 
 Route::get('/users', function (Request $request) {
     return json(DB::statement("SELECT * FROM users"));
+});
+
+class User extends Model {
+
+}
+
+Route::post('/user/model', function (Request $request) {
+    $user = new User();
+    $user->name = $request->data('name');
+    $user->email = $request->data('email');
+    $user->save();
+
+    return json(["message" => "ok"]);
 });
 
 $app->run();
