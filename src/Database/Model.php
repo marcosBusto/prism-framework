@@ -157,7 +157,7 @@ abstract class Model
 
         $models = [$model->setAttributes($rows[0])];
 
-        for ($i = 0; $i < count($rows); $i++) {
+        for ($i = 1; $i < count($rows); $i++) {
             $models[] = (new static())->setAttributes($rows[$i]);
         }
 
@@ -178,10 +178,25 @@ abstract class Model
 
         $models = [$model->setAttributes($rows[0])];
 
-        for ($i = 0; $i < count($rows); $i++) {
+        for ($i = 1; $i < count($rows); $i++) {
             $models[] = (new static())->setAttributes($rows[$i]);
         }
 
         return $models;
+    }
+
+    public static function firstWhere(string $column, mixed $value): ?static
+    {
+        $model = new static();
+        $rows = self::$driver->statement(
+            "SELECT * FROM $model->table WHERE $column = ? LIMIT 1",
+            [$value]
+        );
+
+        if (count($rows) == 0) {
+            return null;
+        }
+
+        return $model->setAttributes($rows[0]);
     }
 }
