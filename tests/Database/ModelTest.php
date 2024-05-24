@@ -21,28 +21,9 @@ class MockModelFillable extends MockModel
 
 class ModelTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected ?DatabaseDriver $driver = null;
-
-    protected function setUp(): void
-    {
-        if (is_null($this->driver)) {
-            $this->driver = new PdoDriver();
-
-            Model::setDatabaseDriver($this->driver);
-
-            try {
-                $this->driver->connect('mysql', 'localhost', 3306, 'framework_tests', 'root', '');
-            } catch (PDOException $e) {
-                $this->markTestSkipped("Can't connect to test database: {$e->getMessage()}");
-            }
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        $this->driver->statement("DROP DATABASE IF EXISTS framework_tests");
-        $this->driver->statement("CREATE DATABASE framework_tests");
-    }
 
     private function createTestTable($name, $columns, $withTimestamps = true)
     {
