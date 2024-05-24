@@ -9,7 +9,8 @@ class Migrator
     public function __construct(
         private string $migrationsDirectory,
         private string $templatesDirectory,
-        private DatabaseDriver $driver
+        private DatabaseDriver $driver,
+        private bool $logProgress = true
     ) {
         $this->migrationsDirectory = $migrationsDirectory;
         $this->templatesDirectory = $templatesDirectory;
@@ -18,7 +19,9 @@ class Migrator
 
     private function log(string $message)
     {
-        print($message . PHP_EOL);
+        if ($this->logProgress) {
+            print($message . PHP_EOL);
+        }
     }
 
     private function createMigrationsTableIfNotExists()
@@ -86,7 +89,7 @@ class Migrator
         }
     }
 
-    public function make(string $migrationName)
+    public function make(string $migrationName): string
     {
         $migrationName = snake_case($migrationName);
         $template = file_get_contents("$this->templatesDirectory/migration.php");

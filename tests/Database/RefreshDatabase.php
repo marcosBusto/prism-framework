@@ -2,6 +2,7 @@
 
 namespace Prism\Tests\Database;
 
+use Prism\Database\Drivers\DatabaseDriver;
 use Prism\Database\Drivers\PdoDriver;
 use Prism\Database\Model;
 use PDOException;
@@ -11,7 +12,7 @@ trait RefreshDatabase
     protected function setUp(): void
     {
         if (is_null($this->driver)) {
-            $this->driver = new PdoDriver();
+            $this->driver = singleton(DatabaseDriver::class, PdoDriver::class);
 
             Model::setDatabaseDriver($this->driver);
 
