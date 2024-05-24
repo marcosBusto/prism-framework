@@ -16,15 +16,18 @@ class Migrator
         $this->driver = $driver;
     }
 
-    private function log(string $message) {
+    private function log(string $message)
+    {
         print($message . PHP_EOL);
     }
 
-    private function createMigrationsTableIfNotExists() {
+    private function createMigrationsTableIfNotExists()
+    {
         $this->driver->statement("CREATE TABLE IF NOT EXISTS migrations (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(256))");
     }
 
-    public function migrate() {
+    public function migrate()
+    {
         $this->createMigrationsTableIfNotExists();
 
         $migrated = $this->driver->statement("SELECT * FROM migrations");
@@ -45,6 +48,41 @@ class Migrator
 
             $this->driver->statement("INSERT INTO migrations (name) VALUES (?)", [$name]);
             $this->log("Migrated => $name");
+        }
+    }
+
+    public function rollback(?int $steps = null)
+    {
+        $this->createMigrationsTableIfNotExists();
+
+        $migrated = $this->driver->statement("SELECT * FROM migrations");
+        $pending = count($migrated);
+
+        if ($pending == 0) {
+            $this->log("Nothing to rollback");
+
+            return;
+        }
+
+        if (is_null($steps) || $steps > $pending) {
+            $steps = $pending;
+        }
+
+        $migrations = array_slice(array_reverse(glob("$this->migrationsDirectory/*.php")), -$pending);
+
+        foreach ($migrations as $file) {
+            $migration = require $file;
+
+            $migration->down();
+
+            $name = basename($file);
+
+            $this->driver->statement("DELETE FROM migrations WHERE name = ?", [$name]);
+            $this->log("Rollback => $name");
+
+            if (--$steps == 0) {
+                break;
+            }
         }
     }
 
