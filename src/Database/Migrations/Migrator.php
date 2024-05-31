@@ -3,24 +3,28 @@
 namespace Prism\Database\Migrations;
 
 use Prism\Database\Drivers\DatabaseDriver;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Migrator
 {
+    private ConsoleOutput $output;
+
     public function __construct(
         private string $migrationsDirectory,
         private string $templatesDirectory,
         private DatabaseDriver $driver,
-        private bool $logProgress = true
+        private bool $logProgress = true,
     ) {
         $this->migrationsDirectory = $migrationsDirectory;
         $this->templatesDirectory = $templatesDirectory;
         $this->driver = $driver;
+        $this->output = new ConsoleOutput();
     }
 
     private function log(string $message)
     {
         if ($this->logProgress) {
-            print($message . PHP_EOL);
+            $this->output->writeln("<info>$message</info>");
         }
     }
 
@@ -37,7 +41,7 @@ class Migrator
         $migrations = glob("$this->migrationsDirectory/*.php");
 
         if (count($migrated) >= count($migrations)) {
-            $this->log("Nothing to migrate");
+            $this->log("<comment>Nothing to migrate</comment>");
 
             return;
         }
@@ -50,7 +54,7 @@ class Migrator
             $name = basename($file);
 
             $this->driver->statement("INSERT INTO migrations (name) VALUES (?)", [$name]);
-            $this->log("Migrated => $name");
+            $this->log("<info>Migrated => $name</info>");
         }
     }
 
@@ -59,6 +63,7 @@ class Migrator
         $this->createMigrationsTableIfNotExists();
 
         $migrated = $this->driver->statement("SELECT * FROM migrations");
+
         $pending = count($migrated);
 
         if ($pending == 0) {
@@ -92,12 +97,13 @@ class Migrator
     public function make(string $migrationName): string
     {
         $migrationName = snake_case($migrationName);
+
         $template = file_get_contents("$this->templatesDirectory/migration.php");
 
         if (preg_match("/create_.*_table/", $migrationName)) {
-            $table = preg_replace_callback("/create_(.*):table/", fn ($match) => $match[1], $migrationName);
+            $table = preg_replace_callback("/create_(.*)_table/", fn ($match) => $match[1], $migrationName);
             $template = str_replace('$UP', "CREATE TABLE $table (id INT AUTO_INCREMENT PRIMARY KEY)", $template);
-            $template = str_replace('$down', "drop TABLE $table", $template);
+            $template = str_replace('$DOWN', "DROP TABLE $table", $template);
         } elseif (preg_match("/.*(from|to)_(.*)_table/", $migrationName)) {
             $table = preg_replace_callback("/.*(from|to)_(.*)_table/", fn ($match) => $match[2], $migrationName);
             $template = preg_replace('/\$UP|\$DOWN/', "ALTER TABLE $table", $template);
@@ -117,6 +123,8 @@ class Migrator
         $fileName = sprintf("%s_%06d_%s.php", $date, $id, $migrationName);
 
         file_put_contents("$this->migrationsDirectory/$fileName", $template);
+
+        $this->log("Created migrations => $fileName");
 
         return $fileName;
     }
