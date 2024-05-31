@@ -2,6 +2,8 @@
 
 namespace Prism\Http;
 
+use Prism\View\View;
+
 /**
  * HTTP response that will be sent to the client.
  */
@@ -182,7 +184,7 @@ class Response
 
     public static function view(string $view, array $params = [], string $layout = null): self
     {
-        $content = app()->view->render($view, $params, $layout);
+        $content = app(View::class)->render($view, $params, $layout);
 
         return (new self())
             ->setContentType("text/html")

@@ -5,21 +5,16 @@ namespace Prism;
 use Dotenv\Dotenv;
 use Prism\Config\Config;
 use Prism\Database\Drivers\DatabaseDriver;
-use Prism\Database\Drivers\PdoDriver;
 use Prism\Database\Model;
 use Prism\Http\HttpMethod;
 use Prism\Http\HttpNotFoundException;
 use Prism\Http\Request;
 use Prism\Http\Response;
 use Prism\Routing\Router;
-use Prism\Server\PhpNativeServer;
 use Prism\Server\Server;
-use Prism\Session\PhpNativeSessionStorage;
 use Prism\Session\Session;
+use Prism\Session\SessionStorage;
 use Prism\Validation\Exceptions\ValidationException;
-use Prism\Validation\Rule;
-use Prism\View\PrismEngine;
-use Prism\View\View;
 use Throwable;
 
 class App
@@ -28,7 +23,6 @@ class App
     public Router $router;
     public Request $request;
     public Server $server;
-    public View $view;
     public Session $session;
     public DatabaseDriver $database;
 
@@ -36,23 +30,63 @@ class App
     {
         self::$root = $root;
 
-        Dotenv::createImmutable($root);
-        Config::load("$root/config");
-
         $app = singleton(self::class);
-        $app->router = new Router();
-        $app->server = new PhpNativeServer();
-        $app->request = $app->server->getRequest();
-        $app->view = new PrismEngine(__DIR__ . "/../views");
-        $app->session = new Session(new PhpNativeSessionStorage());
-        $app->database = singleton(DatabaseDriver::class, PdoDriver::class);
 
-        $app->database->connect('mysql', 'localhost', 3306, 'framework', 'root', '');
-
-        Model::setDatabaseDriver($app->database);
-        Rule::loadDefaultRules();
+        return $app
+            ->loadConfig()
+            ->runServiceProviders('boot')
+            ->setHttpHandlers()
+            ->setUpDatabaseConnection()
+            ->runServiceProviders('runtime');
 
         return $app;
+    }
+
+    protected function loadConfig(): self
+    {
+        Dotenv::createImmutable(self::$root);
+        Config::load(self::$root . "/config");
+
+        return $this;
+    }
+
+    protected function runServiceProviders(string $type): self
+    {
+        foreach (config("providers.$type", []) as $provider) {
+            $provider = new $provider();
+
+            $provider->registerServices();
+        }
+
+        return $this;
+    }
+
+    public function setHttpHandlers(): self
+    {
+        $this->router = singleton(Router::class);
+        $this->server = app(Server::class);
+        $this->request = $this->server->getRequest();
+        $this->session = singleton(Session::class, fn () => new Session(app(SessionStorage::class)));
+
+        return $this;
+    }
+
+    public function setUpDatabaseConnection(): self
+    {
+        $this->database = app(DatabaseDriver::class);
+
+        $this->database->connect(
+            config("database.connection"),
+            config("database.host"),
+            config("database.port"),
+            config("database.database"),
+            config("database.username"),
+            config("database.password"),
+        );
+
+        Model::setDatabaseDriver($this->database);
+
+        return $this;
     }
 
     public function prepareNextRequest()
