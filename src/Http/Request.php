@@ -3,6 +3,7 @@
 namespace Prism\Http;
 
 use Prism\Routing\Route;
+use Prism\Storage\File;
 use Prism\Validation\Validator;
 
 /**
@@ -46,6 +47,13 @@ class Request
     protected array $query;
 
     protected array $headers = [];
+
+    /**
+     * Uploaded files.
+     *
+     * @var array<string, \Prism\Storage\File>
+     */
+    protected array $files = [];
 
     /**
      * Get the request URI.
@@ -130,6 +138,30 @@ class Request
         foreach ($headers as $header => $value) {
             $this->headers[strtolower($header)] = $value;
         }
+
+        return $this;
+    }
+
+    /**
+     * Get file from request.
+     *
+     * @param string $name
+     * @return File|null
+     */
+    public function file(string $name): ?File
+    {
+        return $this->files[$name] ?? null;
+    }
+
+    /**
+     * Set uploaded files.
+     *
+     * @param array<string, \Prism\Storage\File> $files
+     * @return self
+     */
+    public function setFiles(array $files): self
+    {
+        $this->files = $files;
 
         return $this;
     }

@@ -8,6 +8,7 @@ return [
         Prism\Providers\ViewServiceProvider::class,
         Prism\Providers\AuthenticatorServiceProvider::class,
         Prism\Providers\HasherServiceProvider::class,
+        Prism\Providers\FileStorageDriverServiceProvider::class,
     ],
 
     'runtime' => [
