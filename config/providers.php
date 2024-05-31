@@ -7,6 +7,7 @@ return [
         Prism\Providers\SessionStorageServiceProvider::class,
         Prism\Providers\ViewServiceProvider::class,
         Prism\Providers\AuthenticatorServiceProvider::class,
+        Prism\Providers\HasherServiceProvider::class,
     ],
 
     'runtime' => [
