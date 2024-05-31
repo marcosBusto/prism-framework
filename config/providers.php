@@ -6,6 +6,7 @@ return [
         Prism\Providers\DatabaseDriverServiceProvider::class,
         Prism\Providers\SessionStorageServiceProvider::class,
         Prism\Providers\ViewServiceProvider::class,
+        Prism\Providers\AuthenticatorServiceProvider::class,
     ],
 
     'runtime' => [
