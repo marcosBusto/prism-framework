@@ -2,6 +2,8 @@
 
 namespace Prism;
 
+use Dotenv\Dotenv;
+use Prism\Config\Config;
 use Prism\Database\Drivers\DatabaseDriver;
 use Prism\Database\Drivers\PdoDriver;
 use Prism\Database\Model;
@@ -22,6 +24,7 @@ use Throwable;
 
 class App
 {
+    public static string $root;
     public Router $router;
     public Request $request;
     public Server $server;
@@ -29,17 +32,23 @@ class App
     public Session $session;
     public DatabaseDriver $database;
 
-    public static function bootstrap()
+    public static function bootstrap(string $root)
     {
-        $app = singleton(self::class);
+        self::$root = $root;
 
+        Dotenv::createImmutable($root);
+        Config::load("$root/config");
+
+        $app = singleton(self::class);
         $app->router = new Router();
         $app->server = new PhpNativeServer();
         $app->request = $app->server->getRequest();
         $app->view = new PrismEngine(__DIR__ . "/../views");
         $app->session = new Session(new PhpNativeSessionStorage());
         $app->database = singleton(DatabaseDriver::class, PdoDriver::class);
-        $app->database->connect('mysql', 'localhost', 3306, 'curso_framework', 'root', '');
+
+        $app->database->connect('mysql', 'localhost', 3306, 'framework', 'root', '');
+
         Model::setDatabaseDriver($app->database);
         Rule::loadDefaultRules();
 
