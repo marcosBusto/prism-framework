@@ -85,7 +85,7 @@ class RouterTest extends TestCase
         }
     }
 
-    public function text_run_middlewares()
+    public function test_run_middlewares()
     {
         $middleware1 = new class () {
             public function handle(Request $request, Closure $next): Response
@@ -113,7 +113,7 @@ class RouterTest extends TestCase
         $uri = '/test';
         $expectedResponse = Response::text("test");
 
-        $router->get($uri, fn ($request) => $expectedResponse)
+        $router->get($uri, fn () => $expectedResponse)
             ->setMiddlewares([$middleware1::class, $middleware2::class]);
 
         $response = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
@@ -147,7 +147,7 @@ class RouterTest extends TestCase
         $uri = '/test';
         $unreachableResponse = Response::text("Unreachable");
 
-        $router->get($uri, fn ($request) => $unreachableResponse)
+        $router->get($uri, fn () => $unreachableResponse)
             ->setMiddlewares([$stopMiddleware, $middleware2]);
 
         $response = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
