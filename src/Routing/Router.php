@@ -3,6 +3,7 @@
 namespace Prism\Routing;
 
 use Closure;
+use Prism\Container\DependencyInjection;
 use Prism\Http\HttpMethod;
 use Prism\Http\HttpNotFoundException;
 use Prism\Http\Request;
@@ -61,10 +62,12 @@ class Router
             $action[0] = $controller;
         }
 
+        $params = DependencyInjection::resolveParameters($action, $request->routeParameters());
+
         return $this->runMiddlewares(
             $request,
             $route->middlewares(),
-            fn () => call_user_func($action, $request)
+            fn () => call_user_func($action, ...$params)
         );
     }
 
