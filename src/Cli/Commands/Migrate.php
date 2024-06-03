@@ -13,7 +13,7 @@ class Migrate extends Command
 
     protected static $defaultDescription = "Run migrations";
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             app(Migrator::class)->migrate();

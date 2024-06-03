@@ -4,9 +4,12 @@ namespace Prism\Cli;
 
 use Dotenv\Dotenv;
 use Prism\App;
+use Prism\Cli\Commands\MakeController;
 use Prism\Cli\Commands\MakeMigration;
+use Prism\Cli\Commands\MakeModel;
 use Prism\Cli\Commands\Migrate;
 use Prism\Cli\Commands\MigrateRollback;
+use Prism\Cli\Commands\Serve;
 use Prism\Config\Config;
 use Prism\Database\Drivers\DatabaseDriver;
 use Prism\Database\Migrations\Migrator;
@@ -52,7 +55,10 @@ class Cli
         $cli->addCommands([
             new MakeMigration(),
             new Migrate(),
-            new MigrateRollback()
+            new MigrateRollback(),
+            new MakeController(),
+            new MakeModel(),
+            new Serve(),
         ]);
 
         $cli->run();

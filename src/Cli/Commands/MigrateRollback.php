@@ -19,7 +19,7 @@ class MigrateRollback extends Command
         $this->addArgument("steps", InputArgument::OPTIONAL, "Amount of migrations to reverse, all by default");
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             app(Migrator::class)->rollback($input->getArgument('steps') ?? null);

@@ -19,7 +19,7 @@ class MakeMigration extends Command
         $this->addArgument("name", InputArgument::REQUIRED, "Migration name");
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         app(Migrator::class)->make($input->getArgument('name'));
 
