@@ -5,10 +5,10 @@ use Prism\Database\Migrations\Migration;
 
 return new class() implements Migration {
     public function up() {
-        DB::statement('CREATE TABLE test (id INT AUTO_INCREMENT PRIMARY KEY)');
+        DB::statement('CREATE TABLE contacts (id INT AUTO_INCREMENT PRIMARY KEY)');
     }
-
+    
     public function down() {
-        DB::statement('DROP TABLE test');
+        DB::statement('DROP TABLE contacts');
     }
 };
