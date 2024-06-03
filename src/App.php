@@ -61,7 +61,7 @@ class App
         return $this;
     }
 
-    public function setHttpHandlers(): self
+    protected function setHttpHandlers(): self
     {
         $this->router = singleton(Router::class);
         $this->server = app(Server::class);
@@ -71,7 +71,7 @@ class App
         return $this;
     }
 
-    public function setUpDatabaseConnection(): self
+    protected function setUpDatabaseConnection(): self
     {
         $this->database = app(DatabaseDriver::class);
 
@@ -89,14 +89,14 @@ class App
         return $this;
     }
 
-    public function prepareNextRequest()
+    protected function prepareNextRequest()
     {
         if ($this->request->method() == HttpMethod::GET) {
             $this->session->set('_previous', $this->request->uri());
         }
     }
 
-    public function terminate(Response $response)
+    protected function terminate(Response $response)
     {
         $this->prepareNextRequest();
         $this->server->sendResponse($response);
